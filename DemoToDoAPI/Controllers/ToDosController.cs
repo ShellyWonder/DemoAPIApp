@@ -1,5 +1,6 @@
 ﻿
- using Microsoft.AspNetCore.Mvc;
+using DemoAPIClassLibrary.Models;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace DemoToDoAPI.Controllers
@@ -10,34 +11,45 @@ namespace DemoToDoAPI.Controllers
     {
         // GET: api/ToDos
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<IEnumerable<ToDoModel>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok();
+            throw new NotImplementedException();
         }
 
         // GET api/ToDos/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<ToDoModel>Get(int id)
         {
-            return "value";
+            throw new NotImplementedException();
         }
 
         // POST api/ToDos
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] string value)
         {
+            throw new NotImplementedException();
         }
         //PUT = Update
         // PUT api/ToDos/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] string value)
         {
+            throw new NotImplementedException();
+        }
+        //PUT = Update
+        // PUT api/ToDos/5/Complete
+        [HttpPut("{id}/Complete")]
+        public IActionResult Complete(int id)
+        {
+            throw new NotImplementedException();
         }
 
         // DELETE api/ToDos/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            throw new NotImplementedException();
         }
     }
 }
