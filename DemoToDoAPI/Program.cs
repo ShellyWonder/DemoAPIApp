@@ -1,42 +1,11 @@
-using DemoToDoAPI.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
+using DemoToDoAPI.StartupConfig;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddAuthorization(opts =>
-{
-    //Requires all endpoints to be secure unless otherwise noted;
-    opts.FallbackPolicy = new AuthorizationPolicyBuilder()
-            .RequireAuthenticatedUser()
-            .Build();
-});
-builder.Services.AddHealthChecks()
-    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-builder.Services.AddAuthentication("Bearer")
-  .AddJwtBearer(opts =>
-{
-    opts.TokenValidationParameters = new()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidIssuer = builder.Configuration.GetValue<string>("Authentication:Issuer"),
-        ValidAudience = builder.Configuration.GetValue<string>("Authentication:Audience"),
-        IssuerSigningKey = new SymmetricSecurityKey
-                                (Encoding.ASCII.GetBytes
-                                (builder.Configuration.GetValue<string>
-                                ("Authentication:SecretKey") ?? "DefaultSecretKey"))
-    };  
-});
-
+// Services moved to extension methods in StartupConfig
+builder.AddStandardServices();
+builder.AddCustomServices();
+builder.AddAuthenticationServices();    
+builder.AddHealthCheckServices();   
 
 var app = builder.Build();
 
