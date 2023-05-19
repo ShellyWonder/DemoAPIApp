@@ -1,7 +1,8 @@
 ﻿
 using DemoAPIClassLibrary.Models;
+using DemoAPIClassLibrary.SQLDataAccess;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Security.Claims;
 
 namespace DemoToDoAPI.Controllers
 {
@@ -9,26 +10,67 @@ namespace DemoToDoAPI.Controllers
     [ApiController]
     public class ToDosController : ControllerBase
     {
+        private readonly IToDoData _toDoData;
+        
+
+
+        public ToDosController(IToDoData data)
+        {
+            _toDoData = data;
+        }
         // GET: api/ToDos
         [HttpGet]
-        public ActionResult<IEnumerable<ToDoModel>> Get()
+        public async Task<ActionResult<List<ToDoModel>>> Get()
         {
-            return Ok();
-            throw new NotImplementedException();
+            var userIdText = User.Claims.FirstOrDefault(c =>
+                               c.Type == ClaimTypes.NameIdentifier)?.Value;
+           
+            if (userIdText == null)
+            {
+                return Unauthorized();  
+            }
+
+
+           var userId = int.Parse(userIdText);
+            
+          var output =  await _toDoData.GetAllAssigned(userId);
+            return Ok(output);
         }
 
         // GET api/ToDos/5
-        [HttpGet("{id}")]
-        public ActionResult<ToDoModel>Get(int id)
+        [HttpGet("{todoid}")]
+        public async Task<ActionResult<ToDoModel>>Get(int todoId)
         {
-            throw new NotImplementedException();
+            var userIdText = User.Claims.FirstOrDefault(c =>
+                               c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userIdText == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var userId = int.Parse(userIdText);
+            var output = await _toDoData.GetOneAssigned(userId, todoId);
+            return Ok(output);
         }
 
         // POST api/ToDos
         [HttpPost]
-        public IActionResult Post([FromBody] string value)
+        public async Task<ActionResult<ToDoModel>> Post([FromBody] string task)
         {
-            throw new NotImplementedException();
+            var userIdText = User.Claims.FirstOrDefault(c =>
+                              c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userIdText == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var userId = int.Parse(userIdText);
+            var output = await _toDoData.Create(userId, task);
+            return Ok(output);
         }
         //PUT = Update
         // PUT api/ToDos/5

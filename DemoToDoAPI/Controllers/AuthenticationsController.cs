@@ -11,9 +11,9 @@ namespace DemoToDoAPI.Controllers
     public class AuthenticationsController : ControllerBase
     {
         private readonly IConfiguration _config;
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
 
-        public AuthenticationsController(IConfiguration configuration, TokenService tokenService)
+        public AuthenticationsController(IConfiguration configuration, ITokenService tokenService)
         {
             _config = configuration;
             _tokenService = tokenService;

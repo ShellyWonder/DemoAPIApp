@@ -18,7 +18,7 @@ public static class DependencyInjectionExtensions
     public static void AddCustomServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<IToDoData, ToDoData>();
-        builder.Services.AddTransient<ITokenService, TokenService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
     }
 
